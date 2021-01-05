@@ -29,10 +29,9 @@ jobs:
           npm run img
     - name: Commit report
       run: |
-          date=$(date '+%Y-%m-%d %H:%M')
           git config --global user.name 'Your Name'
           git config --global user.email 'your-username@users.noreply.github.com'
-          git commit -am "save archives at $date"
+          git commit -am "save archives run_number ${{ github.GITHUB_RUN_NUMBER }}"
           git push
       env:
           PUSH_KEY: ${{ secrets.PUSH_KEY }}
