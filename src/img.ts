@@ -17,7 +17,7 @@ createConnection()
 
     const result = await postRepository.find({
       where: { imgDownloaded: false },
-      take: 10,
+      take: 5,
     });
 
     for (const post of result) {
