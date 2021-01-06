@@ -14,7 +14,7 @@ const sleep = async () => {
 
 createConnection()
   .then(async (connection) => {
-    let num = 100;
+    let num = 2;
 
     while (num > 0) {
       try {
