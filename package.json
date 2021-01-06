@@ -12,6 +12,7 @@
     "axios-retry": "^3.1.9",
     "cheerio": "^1.0.0-rc.5",
     "filenamify": "^4.2.0",
+    "iconv-lite": "^0.6.2",
     "make-dir": "^3.1.0",
     "p-map": "^4.0.0",
     "reflect-metadata": "^0.1.13",
@@ -21,6 +22,9 @@
   "scripts": {
     "start": "ts-node src/index.ts",
     "img": "ts-node src/img.ts",
+    "archive": "ts-node src/archive",
+    "tstart": "ts-node src/tIndex.ts",
+    "timg": "ts-node src/tImg.ts",
     "build": "tsc"
   }
 }
