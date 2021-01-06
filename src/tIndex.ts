@@ -14,9 +14,9 @@ const sleep = async () => {
 
 createConnection()
   .then(async (connection) => {
-    let num = 258;
+    let num = 250;
 
-    while (num > 250) {
+    while (num > 200) {
       try {
         console.log(`Running: page ${num}`);
         const data = await tClawer(
