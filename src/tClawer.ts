@@ -9,43 +9,49 @@ import pMap from "p-map";
 import { join, relative, resolve } from "path";
 import { Post } from "./entity/Post";
 import { ArchiveDir, rootDir } from "./utils";
+import iconv from "iconv-lite";
 
 const parseUrl = (content: string) => {
   const $ = cheerio.load(content);
   const result: { title: string; id: string; date: string }[] = [];
-  $(".subject").each((index, el) => {
+  $(`font[color="green"]`).each((index, el) => {
     const $el = $(el);
-    const link = $el.find("span a").first();
-    const title = link.text().trim().split("\n").pop();
-    const href = link.attr("href");
-    const id = href && href.match(/.+tid=(\w+).+/)[1];
-    const date = $el.next().find("em").first().text();
+    const title = $el.text();
+    const href = $el.parent().attr("href");
+    const id = href && href.match(/htm_data\/(\S+)\.html/)[1];
+    const date = $el
+      .parent()
+      .parent()
+      .parent()
+      .parent()
+      .find(".f12")
+      .first()
+      .text();
     const item = { title, id, date };
     id && result.push(item);
   });
   return result;
 };
 
-const clawer = async (url: string) => {
+const tClawer = async (url: string) => {
   axiosRetry(axios, { retries: 3 });
   const rsp = await axios.get(url, {
-    responseType: "text",
+    responseType: "arraybuffer",
     headers: {
-      authority: "f1113.wonderfulday30.live",
-      method: "GET",
-      scheme: "https",
+      "cache-control": "max-age=0",
+      "accept-language": "zh-CN,zh;q=0.9,zh-HK;q=0.8,en;q=0.7",
       cookie:
-        "__cfduid=d4821b7367a04469ca3772e00395c92471609769732; CzG_sid=tg1Iz7; CzG_visitedfid=19",
-      "sec-fetch-dest": "document",
-      "sec-fetch-mode": "navigate",
-      "sec-fetch-site": "none",
-      "upgrade-insecure-requests": "1",
+        "__cfduid=db73534b3b3d577c4efba8d697c1c5cb31609937331; 227c9_lastvisit=0%091609937660%09%2Fthread0806.php%3Ffid%3D16%26search%3Ddigest",
+      referer: "https://www.t66y.com/thread0806.php?fid=16",
       "user-agent":
         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.67 Safari/537.36",
     },
     timeout: 10000,
   });
-  const result = parseUrl(rsp.data);
+  const str = iconv.decode(Buffer.from(rsp.data), "gb2312");
+  const html = iconv.encode(str, "utf8").toString();
+  const result = parseUrl(html);
+
   return result;
 };
 
@@ -54,9 +60,9 @@ const getImgNameByUrl = (url: string) => url.split("/").pop();
 const parseImgUrl = (content: string) => {
   const $ = cheerio.load(content);
   const imgs: string[] = [];
-  const post = $(".t_msgfontfix").first();
+  const post = $(".tpc_content").first();
   post.find("img").each((index, el) => {
-    const href = $(el).attr("file");
+    const href = $(el).attr("ess-data");
 
     if (!href) return;
     $(el).attr("src", "./" + getImgNameByUrl(href));
@@ -68,27 +74,26 @@ const parseImgUrl = (content: string) => {
 const readmeFile = join(ArchiveDir, "README.md");
 
 export const downloadImg = async ({ id, title }: Post) => {
-  const url = `https://f1113.wonderfulday30.live/viewthread.php?tid=${id}&extra=page%3D1%26amp%3Borderby%3Ddateline%26amp%3Bfilter%3Ddigest`;
+  const url = `https://www.t66y.com/htm_data/${id}.html`;
   const rsp = await axios.get(url, {
-    responseType: "text",
+    responseType: "arraybuffer",
     headers: {
-      authority: "f1113.wonderfulday30.live",
-      method: "GET",
-      scheme: "https",
+      "cache-control": "max-age=0",
+      "accept-language": "zh-CN,zh;q=0.9,zh-HK;q=0.8,en;q=0.7",
       cookie:
-        "__cfduid=d4821b7367a04469ca3772e00395c92471609769732; CzG_sid=tg1Iz7; CzG_visitedfid=19",
-      "sec-fetch-dest": "document",
-      "sec-fetch-mode": "navigate",
-      "sec-fetch-site": "none",
-      "upgrade-insecure-requests": "1",
+        "__cfduid=db73534b3b3d577c4efba8d697c1c5cb31609937331; 227c9_lastvisit=0%091609937660%09%2Fthread0806.php%3Ffid%3D16%26search%3Ddigest",
+      referer: "https://www.t66y.com/thread0806.php?fid=16",
       "user-agent":
         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.67 Safari/537.36",
     },
     timeout: 10000,
   });
-  const result = parseImgUrl(rsp.data);
 
-  const dir = join(ArchiveDir, id);
+  const str = iconv.decode(Buffer.from(rsp.data), "gb2312");
+  const html = iconv.encode(str, "utf8").toString();
+  const result = parseImgUrl(html);
+
+  const dir = join(ArchiveDir, id.replace("/", "-"));
 
   if (!existsSync(dir)) {
     await makeDir(dir);
@@ -152,10 +157,11 @@ export const downloadImg = async ({ id, title }: Post) => {
     }
   );
 
-  return pMap(data, downloadImgThread, {
+  await pMap(data, downloadImgThread, {
     concurrency: 10,
     stopOnError: true,
   });
+  return;
 };
 
-export default clawer;
+export default tClawer;
