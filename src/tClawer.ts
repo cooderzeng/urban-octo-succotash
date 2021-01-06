@@ -93,7 +93,7 @@ export const downloadImg = async ({ id, title }: Post) => {
   const html = iconv.encode(str, "utf8").toString();
   const result = parseImgUrl(html);
 
-  const dir = join(ArchiveDir, id.replace("/", "-"));
+  const dir = join(ArchiveDir, id.replace(/\//g, "-"));
 
   if (!existsSync(dir)) {
     await makeDir(dir);
@@ -159,7 +159,7 @@ export const downloadImg = async ({ id, title }: Post) => {
 
   await pMap(data, downloadImgThread, {
     concurrency: 10,
-    stopOnError: true,
+    stopOnError: false,
   });
   return;
 };
