@@ -15,7 +15,7 @@ createConnection()
   .then(async (connection) => {
     let num = 1;
 
-    while (num <= 2) {
+    while (num <= 5) {
       try {
         console.log(`Running: page ${num}`);
         const data = await clawer(
