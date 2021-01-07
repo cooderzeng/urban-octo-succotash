@@ -19,7 +19,7 @@ createConnection()
       try {
         console.log(`Running: page ${num}`);
         const data = await clawer(
-          `https://f1113.wonderfulday30.live/forumdisplay.php?fid=19&orderby=dateline&filter=digest&page=${num}`
+        `https://f1113.wonderfulday30.live/forumdisplay.php?fid=19&filter=&page=${num}`
         );
 
         let postRepository = connection.getRepository(Post);
