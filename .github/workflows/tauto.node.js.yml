@@ -6,7 +6,7 @@ name: tauto-save
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 19 * * *"
+    - cron: "0 10 * * *"
 
 jobs:
   build:
