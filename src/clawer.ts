@@ -15,13 +15,16 @@ const parseUrl = (content: string) => {
   const result: { title: string; id: string; date: string }[] = [];
   $(".subject").each((index, el) => {
     const $el = $(el);
-    const link = $el.find("span a").first();
-    const title = link.text().trim().split("\n").pop();
-    const href = link.attr("href");
-    const id = href && href.match(/.+tid=(\w+).+/)[1];
-    const date = $el.next().find("em").first().text();
-    const item = { title, id, date };
-    id && result.push(item);
+    const ret = $el.find(`img[alt="帖子被加分"]`);
+    if (ret.length > 0) {
+      const link = $el.find("span a").first();
+      const title = link.text().trim().split("\n").pop();
+      const href = link.attr("href");
+      const id = href && href.match(/.+tid=(\w+).+/)[1];
+      const date = $el.next().find("em").first().text();
+      const item = { title, id, date };
+      id && result.push(item);
+    }
   });
   return result;
 };
