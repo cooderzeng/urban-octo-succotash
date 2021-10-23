@@ -34,7 +34,7 @@ const clawer = async (url: string) => {
   const rsp = await axios.get(url, {
     responseType: "text",
     headers: {
-      authority: "f1113.wonderfulday30.live",
+      authority: "f616.wonderfulday27.live",
       method: "GET",
       scheme: "https",
       cookie:
