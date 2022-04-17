@@ -34,7 +34,7 @@ const clawer = async (url: string) => {
   const rsp = await axios.get(url, {
     responseType: "text",
     headers: {
-      authority: "f616.wonderfulday27.live",
+      authority: "t0328.wonderfulday27.live",
       method: "GET",
       scheme: "https",
       cookie:
@@ -71,11 +71,11 @@ const parseImgUrl = (content: string) => {
 const readmeFile = join(ArchiveDir, "README.md");
 
 export const downloadImg = async ({ id, title }: Post) => {
-  const url = `https://f1113.wonderfulday30.live/viewthread.php?tid=${id}&extra=page%3D1%26amp%3Borderby%3Ddateline%26amp%3Bfilter%3Ddigest`;
+  const url = `https://t0328.wonderfulday27.live/viewthread.php?tid=${id}&extra=page%3D1%26amp%3Borderby%3Ddateline%26amp%3Bfilter%3Ddigest`;
   const rsp = await axios.get(url, {
     responseType: "text",
     headers: {
-      authority: "f1113.wonderfulday30.live",
+      authority: "t0328.wonderfulday27.live",
       method: "GET",
       scheme: "https",
       cookie:
